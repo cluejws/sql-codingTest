@@ -1,0 +1,22 @@
+(SELECT CAR_ID, '대여중' AS AVAILABILITY 
+ FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
+ WHERE (CAR_ID) IN (SELECT CAR_ID
+                   FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
+                   WHERE DATE_FORMAT(START_DATE, '%Y-%m-%d') <= '2022-10-16' 
+                   AND DATE_FORMAT(END_DATE, '%Y-%m-%d') >= '2022-10-16'
+                   GROUP BY CAR_ID
+                  )
+ GROUP BY CAR_ID
+)
+UNION 
+(SELECT CAR_ID, '대여 가능' AS AVAILABILITY 
+ FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
+ WHERE (CAR_ID) NOT IN (SELECT CAR_ID
+                   FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
+                   WHERE DATE_FORMAT(START_DATE, '%Y-%m-%d') <= '2022-10-16' 
+                   AND DATE_FORMAT(END_DATE, '%Y-%m-%d') >= '2022-10-16'
+                   GROUP BY CAR_ID
+                  )
+ GROUP BY CAR_ID
+)
+ORDER BY CAR_ID DESC
